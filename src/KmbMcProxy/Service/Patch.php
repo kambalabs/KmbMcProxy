@@ -49,7 +49,7 @@ class Patch implements PatchInterface
     }
     
     public function patchHost($host,$packages,$environment,$user,$actionid) {
-        $result = $this->doRequest('packages','uptodate',$host,$environment,$user, ['packages' => [ $packages] ],$actionid );
+        $result = $this->doRequest('packages','uptodate',$host,$environment,$user, ['packages' =>  $packages ],$actionid );
         return $result;
     }
 
