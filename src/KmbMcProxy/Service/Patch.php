@@ -58,11 +58,20 @@ class Patch implements PatchInterface
         return $result;
     }
 
-    public function prepatchBatch($hosts,$cve,$environment,$user) {
-
+    public function prepatchBatch($servers,$packages,$environment,$user) {
+        $actionid = md5($user . time());
+        $filter = '('.implode('|',$servers).')';
+        $result = [];
+        foreach($packages as $index => $package) {
+            $result[] = $this->doRequest('package','checkPatch',$filter,$environment,$user, ['package' => $package],$actionid );
+        }
+        return $result;
     }
 
-    public function patchBatch($hosts,$cve,$environment,$user) {
+    public function patchBatch($servers,$packages,$environment,$user,$actionid) {
+        $filter = '('.implode('|',$servers).')';
+        $result = $this->doRequest('packages','uptodate',$servers,$environment,$user, ['packages' =>  $packages ],$actionid );
+        return $result;
 
     }
 
