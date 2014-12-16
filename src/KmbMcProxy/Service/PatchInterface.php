@@ -29,6 +29,8 @@ interface PatchInterface
 
     public function patchHost($host,$packages,$environment,$user,$actionid);
 
+    public function getPackageVersion($host,$package,$environment,$user,$actionid);
+
     public function prepatchBatch($hosts,$cve,$environment,$user);
 
     public function patchBatch($hosts,$cve,$environment,$user);

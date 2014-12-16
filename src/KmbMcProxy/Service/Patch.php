@@ -47,9 +47,14 @@ class Patch implements PatchInterface
     public function registrationRun($host,$environment,$user,$actionid) {
         return $this->doRequest('mcollective','registration',$host,$environment,$user,null,$actionid );
     }
-    
+
     public function patchHost($host,$packages,$environment,$user,$actionid) {
         $result = $this->doRequest('packages','uptodate',$host,$environment,$user, ['packages' =>  $packages ],$actionid );
+        return $result;
+    }
+
+    public function getPackageVersion($host,$package,$environment,$user,$actionid) {
+        $result = $this->doRequest('package','status',$host,$environment,$user,['package' => $package],$actionid );
         return $result;
     }
 
@@ -60,7 +65,7 @@ class Patch implements PatchInterface
     public function patchBatch($hosts,$cve,$environment,$user) {
 
     }
-    
+
     /**
      * @return StdClass[]
      */
@@ -71,7 +76,7 @@ class Patch implements PatchInterface
             'mc_action' => $action,
             'mc_filter' => $filter,
             'environment' => $puppetEnv,
-            'ihm_user'  => $ihmuser,           
+            'ihm_user'  => $ihmuser,
         );
         if($actionid) {
             $requestData['actionid']=$actionid;
@@ -81,7 +86,7 @@ class Patch implements PatchInterface
             error_log(print_r($arguments,true));
             $requestData['args'] = $arguments;
         }
-        
+
         $mcresult = $this->mcProxyClient->post('/mc_requests',$requestData);
         return $mcresult;
     }
