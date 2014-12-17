@@ -27,11 +27,13 @@ interface PatchInterface
 {
     public function prepatchHost($host,$cve,$environment,$user);
 
+    public function prepatchBatch($servers,$packages,$environment,$user);
+
+    public function prepatch($servers,$packages,$environment,$user);
+
     public function patchHost($host,$packages,$environment,$user,$actionid);
 
     public function getPackageVersion($host,$package,$environment,$user,$actionid);
-
-    public function prepatchBatch($servers,$packages,$environment,$user);
 
 
     public function patchBatch($servers,$packages,$environment,$user,$actionid);

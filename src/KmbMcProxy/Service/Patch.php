@@ -53,6 +53,17 @@ class Patch implements PatchInterface
         return $result;
     }
 
+    public function patch($servers,$packages,$environment,$user,$actionid) {
+
+        if(is_string($servers)) {
+            $filter = $servers;
+        }else{
+            $filter = '('.implode('|',$servers).')';
+        }
+        $result = $this->doRequest('packages','uptodate',$filter,$environment,$user, ['packages' =>  $packages ],$actionid );
+        return $result;
+    }
+
     public function getPackageVersion($host,$package,$environment,$user,$actionid) {
         $result = $this->doRequest('package','status',$host,$environment,$user,['package' => $package],$actionid );
         return $result;
@@ -68,11 +79,25 @@ class Patch implements PatchInterface
         return $result;
     }
 
+    public function prepatch($host,$packages,$environment,$user)
+    {
+        $actionid = md5($user . time());
+        $result=[];
+        if(is_string($host)) {
+            $filter = $host;
+        }else {
+            $filter = '('.implode('|',$host).')';
+        }
+        foreach($packages as $index => $package) {
+            $result[] = $this->doRequest('package','checkPatch',$filter,$environment,$user, ['package' => $package],$actionid );
+        }
+        return $result;
+    }
+
     public function patchBatch($servers,$packages,$environment,$user,$actionid) {
         $filter = '('.implode('|',$servers).')';
         $result = $this->doRequest('packages','uptodate',$servers,$environment,$user, ['packages' =>  $packages ],$actionid );
         return $result;
-
     }
 
     /**
