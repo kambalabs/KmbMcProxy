@@ -31,27 +31,27 @@ class Patch implements PatchInterface
     /** @var ClientInterface */
     protected $mcProxyClient;
 
-    /**
-     * @return KmbMcProxy\Model\Module[]
-     */
-    public function prepatchHost($host,$packages,$environment,$user)
-    {
-        $actionid = md5($user . time());
-        $result=[];
-        foreach($packages as $index => $package) {
-            $result[] = $this->doRequest('package','checkPatch',$host,$environment,$user, ['package' => $package],$actionid );
-        }
-        return $result;
-    }
+    // /**
+    //  * @return KmbMcProxy\Model\Module[]
+    //  */
+    // public function prepatchHost($host,$packages,$environment,$user)
+    // {
+    //     $actionid = md5($user . time());
+    //     $result=[];
+    //     foreach($packages as $index => $package) {
+    //         $result[] = $this->doRequest('package','checkPatch',$host,$environment,$user, ['package' => $package],$actionid );
+    //     }
+    //     return $result;
+    // }
 
     public function registrationRun($host,$environment,$user,$actionid) {
         return $this->doRequest('mcollective','registration',$host,$environment,$user,null,$actionid );
     }
 
-    public function patchHost($host,$packages,$environment,$user,$actionid) {
-        $result = $this->doRequest('packages','uptodate',$host,$environment,$user, ['packages' =>  $packages ],$actionid );
-        return $result;
-    }
+    // public function patchHost($host,$packages,$environment,$user,$actionid) {
+    //     $result = $this->doRequest('packages','uptodate',$host,$environment,$user, ['packages' =>  $packages ],$actionid );
+    //     return $result;
+    // }
 
     public function patch($servers,$packages,$environment,$user,$actionid) {
 
@@ -60,24 +60,24 @@ class Patch implements PatchInterface
         }else{
             $filter = '('.implode('|',$servers).')';
         }
-        $result = $this->doRequest('packages','uptodate',$filter,$environment,$user, ['packages' =>  $packages ],$actionid );
+        $result = $this->doRequest('kamba','uptodate',$filter,$environment,$user, ['packages' =>  $packages ],$actionid,'patch' );
         return $result;
     }
 
     public function getPackageVersion($host,$package,$environment,$user,$actionid) {
-        $result = $this->doRequest('package','status',$host,$environment,$user,['package' => $package],$actionid );
+        $result = $this->doRequest('kamba','status',$host,$environment,$user,['package' => $package],$actionid );
         return $result;
     }
 
-    public function prepatchBatch($servers,$packages,$environment,$user) {
-        $actionid = md5($user . time());
-        $filter = '('.implode('|',$servers).')';
-        $result = [];
-        foreach($packages as $index => $package) {
-            $result[] = $this->doRequest('package','checkPatch',$filter,$environment,$user, ['package' => $package],$actionid );
-        }
-        return $result;
-    }
+    // public function prepatchBatch($servers,$packages,$environment,$user) {
+    //     $actionid = md5($user . time());
+    //     $filter = '('.implode('|',$servers).')';
+    //     $result = [];
+    //     foreach($packages as $index => $package) {
+    //         $result[] = $this->doRequest('package','checkPatch',$filter,$environment,$user, ['package' => $package],$actionid );
+    //     }
+    //     return $result;
+    // }
 
     public function prepatch($host,$packages,$environment,$user)
     {
@@ -94,16 +94,16 @@ class Patch implements PatchInterface
         return $result;
     }
 
-    public function patchBatch($servers,$packages,$environment,$user,$actionid) {
-        $filter = '('.implode('|',$servers).')';
-        $result = $this->doRequest('packages','uptodate',$servers,$environment,$user, ['packages' =>  $packages ],$actionid );
-        return $result;
-    }
+    // public function patchBatch($servers,$packages,$environment,$user,$actionid) {
+    //     $filter = '('.implode('|',$servers).')';
+    //     $result = $this->doRequest('packages','uptodate',$servers,$environment,$user, ['packages' =>  $packages ],$actionid );
+    //     return $result;
+    // }
 
     /**
      * @return StdClass[]
      */
-    public function doRequest($agent,$action,$filter,$puppetEnv,$ihmuser,$arguments=null,$actionid = null)
+    public function doRequest($agent,$action,$filter,$puppetEnv,$ihmuser,$arguments=null,$actionid = null, $type = null)
     {
         $requestData = array(
             'mc_agent' => $agent,
@@ -111,6 +111,7 @@ class Patch implements PatchInterface
             'mc_filter' => $filter,
             'environment' => $puppetEnv,
             'ihm_user'  => $ihmuser,
+            'type' => $type
         );
         if($actionid) {
             $requestData['actionid']=$actionid;
