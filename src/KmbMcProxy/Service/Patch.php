@@ -111,8 +111,10 @@ class Patch implements PatchInterface
             'mc_filter' => $filter,
             'environment' => $puppetEnv,
             'ihm_user'  => $ihmuser,
-            'type' => $type
         );
+        if($type) {
+            $requestData['type'] = $type;
+        }
         if($actionid) {
             $requestData['actionid']=$actionid;
         }
