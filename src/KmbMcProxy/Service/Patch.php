@@ -66,9 +66,10 @@ class Patch implements PatchInterface
         }else {
             $filter = '('.implode('|',$host).')';
         }
-        foreach($packages as $index => $package) {
-            $result[] = $this->doRequest('package','checkPatch',$filter,$environment,$user, ['package' => $package],$actionid );
-        }
+        // foreach($packages as $index => $package) {
+        //     $result[] = $this->doRequest('package','checkPatch',$filter,$environment,$user, ['package' => $package],$actionid );
+        // }
+        $result[] = $this->doRequest('kamba','checkPatch',$filter,$environment,$user, ['package' => $packages],$actionid );
         return $result;
     }
 
