@@ -185,7 +185,7 @@ class Client implements ClientInterface
      */
     protected function getUri($uri)
     {
-        return ltrim($this->getOptions()->getBaseUri(), '/') . $uri;
+        return rtrim($this->getOptions()->getBaseUri(), '/') . $uri;
     }
 
     /**
